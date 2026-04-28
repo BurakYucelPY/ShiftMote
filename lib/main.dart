@@ -3,6 +3,7 @@ import 'package:easy_localization_loader/easy_localization_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'Route/routing.dart';
 import 'screens/Ayarlar/ayarlar.dart';
 
 Future<void> main() async {
@@ -31,16 +32,16 @@ class ShiftMoteApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AyarlarProvider>(
-      builder: (context, ayar, _) => MaterialApp(
+      builder: (context, ayar, _) => MaterialApp.router(
         title: 'ShiftMote',
         debugShowCheckedModeBanner: false,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
+        routerConfig: router,
         theme: ayar.acikTema,
         darkTheme: ayar.koyuTema,
         themeMode: ayar.karanlikMod ? ThemeMode.dark : ThemeMode.light,
-        home: const Ayarlar(),
       ),
     );
   }
