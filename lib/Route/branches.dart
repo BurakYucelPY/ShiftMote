@@ -5,6 +5,7 @@ import '../screens/Anasayfa/anasayfa.dart';
 import '../screens/Ayarlar/ayarlar.dart';
 import '../screens/Ayarlar/Dil/dil.dart';
 import '../screens/Hakkında/hakkinda.dart';
+import '../screens/IrTest/ir_test.dart';
 import '../screens/Kumanda/kumanda.dart';
 import '../screens/KumandaEkle/kumanda_ekle.dart';
 import 'identify_routes.dart';
@@ -32,6 +33,14 @@ final List<StatefulShellBranch> branches = [
                 child: Kumanda(kumandaId: id),
               );
             },
+          ),
+          GoRoute(
+            path: Rotalar.irTestPath, // /anasayfa/ir-test
+            name: Rotalar.irTestName,
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const IrTest(),
+            ),
           ),
         ],
       ),

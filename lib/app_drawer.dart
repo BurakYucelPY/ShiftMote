@@ -69,6 +69,16 @@ abstract class AppDrawer {
                 context.goNamed(Rotalar.hakkindaName);
               },
             ),
+            const Divider(),
+            ListTile(
+              leading: Icon(Icons.bug_report,
+                  color: Theme.of(context).colorScheme.error),
+              title: const Text('IR Test'),
+              onTap: () {
+                Navigator.pop(context);
+                context.goNamed(Rotalar.irTestName);
+              },
+            ),
           ],
         ),
       );
