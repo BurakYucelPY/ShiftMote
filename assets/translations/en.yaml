@@ -1,0 +1,16 @@
+app_adi: "ShiftMote"
+
+anasayfa: "Home"
+kumanda_ekle: "Add Remote"
+kumanda: "Remote"
+ayarlar: "Settings"
+dil: "Language"
+hakkinda: "About"
+
+genel:
+  yukleniyor: "Loading..."
+  hata: "An error occurred"
+  iptal: "Cancel"
+  kaydet: "Save"
+  sil: "Delete"
+  geri: "Back"

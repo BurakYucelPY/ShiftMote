@@ -1,0 +1,16 @@
+app_adi: "ShiftMote"
+
+anasayfa: "Anasayfa"
+kumanda_ekle: "Kumanda Ekle"
+kumanda: "Kumanda"
+ayarlar: "Ayarlar"
+dil: "Dil"
+hakkinda: "Hakkında"
+
+genel:
+  yukleniyor: "Yükleniyor..."
+  hata: "Bir hata oluştu"
+  iptal: "İptal"
+  kaydet: "Kaydet"
+  sil: "Sil"
+  geri: "Geri"
