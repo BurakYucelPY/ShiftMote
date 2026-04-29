@@ -6,7 +6,6 @@ class Rotalar {
 
   static const String kumandaPath = 'kumanda/:id';
   static const String dilPath = 'dil';
-  static const String irTestPath = 'ir-test';
 
   static const String anasayfaName = 'anasayfa';
   static const String kumandaEkleName = 'kumandaEkle';
@@ -14,5 +13,4 @@ class Rotalar {
   static const String ayarlarName = 'ayarlar';
   static const String dilName = 'dil';
   static const String hakkindaName = 'hakkinda';
-  static const String irTestName = 'irTest';
 }

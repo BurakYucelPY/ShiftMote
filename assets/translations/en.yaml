@@ -39,13 +39,6 @@ kumanda_page:
   protokol_desteklenmiyor: "Protocol not supported"
   ir_yok: "No IR hardware."
 
-ir_test_page:
-  ir_var: "IR Available"
-  ir_yok: "No IR"
-  samsung_sabit: "Samsung TV Power (fixed)"
-  samsung_parser: "Samsung TV Power (irdb parser)"
-  yonlendir: "Point the phone at the TV. Both buttons should toggle it."
-
 ayarlar_page:
   tema: "Theme"
   karanlik_mod: "Dark Mode"

@@ -39,13 +39,6 @@ kumanda_page:
   protokol_desteklenmiyor: "Protokol desteklenmiyor"
   ir_yok: "IR donanımı yok."
 
-ir_test_page:
-  ir_var: "IR Var"
-  ir_yok: "IR Yok"
-  samsung_sabit: "Samsung TV Power (sabit)"
-  samsung_parser: "Samsung TV Power (irdb parser)"
-  yonlendir: "Telefonu TV'ye doğrult. İki buton da TV'yi açıp kapamalıdır."
-
 ayarlar_page:
   tema: "Tema"
   karanlik_mod: "Karanlık Mod"
