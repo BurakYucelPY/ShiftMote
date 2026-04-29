@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'Route/routing.dart';
+import 'db/kumanda_deposu.dart';
 import 'screens/Ayarlar/ayarlar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await KumandaDeposu.baslat();
 
   runApp(
     EasyLocalization(

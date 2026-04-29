@@ -7,10 +7,11 @@ ayarlar: "Ayarlar"
 dil: "Dil"
 hakkinda: "Hakkında"
 
+iptal: "İptal"
+kaydet: "Kaydet"
+sil: "Sil"
+geri: "Geri"
+
 genel:
   yukleniyor: "Yükleniyor..."
   hata: "Bir hata oluştu"
-  iptal: "İptal"
-  kaydet: "Kaydet"
-  sil: "Sil"
-  geri: "Geri"
