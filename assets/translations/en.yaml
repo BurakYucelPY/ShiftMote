@@ -12,6 +12,23 @@ kaydet: "Save"
 sil: "Delete"
 geri: "Back"
 
+ayarlar_page:
+  tema: "Theme"
+  karanlik_mod: "Dark Mode"
+  acik_mod: "Light Mode"
+  dil_secim: "Language"
+
+dil_page:
+  turkce: "Türkçe"
+  ingilizce: "English"
+
+hakkinda_page:
+  aciklama: "A universal remote that uses your phone's IR blaster hardware."
+  veri_kaynagi: "Device codes"
+  irdb_attr: "probonopd/irdb open database"
+  surum: "Version"
+  not: "Works only on Android devices with an IR LED."
+
 genel:
   yukleniyor: "Loading..."
   hata: "An error occurred"

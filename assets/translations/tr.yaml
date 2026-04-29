@@ -12,6 +12,23 @@ kaydet: "Kaydet"
 sil: "Sil"
 geri: "Geri"
 
+ayarlar_page:
+  tema: "Tema"
+  karanlik_mod: "Karanlık Mod"
+  acik_mod: "Açık Mod"
+  dil_secim: "Dil Seçimi"
+
+dil_page:
+  turkce: "Türkçe"
+  ingilizce: "English"
+
+hakkinda_page:
+  aciklama: "Telefonunun IR (kızılötesi) blaster donanımını kullanan evrensel bir kumanda."
+  veri_kaynagi: "Cihaz kodları"
+  irdb_attr: "probonopd/irdb açık veritabanı"
+  surum: "Sürüm"
+  not: "Sadece IR LED'i olan Android cihazlarda çalışır."
+
 genel:
   yukleniyor: "Yükleniyor..."
   hata: "Bir hata oluştu"
