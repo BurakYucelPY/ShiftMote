@@ -34,6 +34,9 @@ dependencies:
   path_provider: ^2.1.2
   path: ^1.8.3
 
+  # Asset arsivinden CSV cikarmak icin
+  archive: ^3.6.1
+
   # IR: pub.dev'de güncel paket yok — Aşama 5'te native MethodChannel köprüsü yazılacak
 
 dev_dependencies:
@@ -49,3 +52,4 @@ flutter:
 
   assets:
     - assets/translations/
+    - assets/irdb.tar.gz

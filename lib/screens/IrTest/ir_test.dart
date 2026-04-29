@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../ir/ir_servis.dart';
+import '../../ir/irdb_parser.dart';
 import 'ir_test_view.dart';
 
 class IrTestProvider extends ChangeNotifier {
@@ -29,12 +30,45 @@ class IrTestProvider extends ChangeNotifier {
       return;
     }
     try {
-      // 0xE0E040BF: Samsung TV power (yaygin kod)
+      // Samsung-specific timing (4500/4500 header) - 0xE0E040BF
       final pattern = IrServis.samsungTimings(0xE0E040BF);
       await IrServis.gonder(frekans: 38000, pattern: pattern);
-      _sonMesaj = 'Samsung TV power kodu yayildi.';
+      _sonMesaj = 'Samsung TV power kodu yayildi (sabit timing).';
     } catch (e) {
       _sonMesaj = 'Yayim hatasi: $e';
+    }
+    notifyListeners();
+  }
+
+  /// Parser yolundan: irdb'den Samsung TV 7,7 dosyasini yukle, POWER komutunu yay.
+  Future<void> parserYoluylaYay() async {
+    if (!_irVar) {
+      _sonMesaj = 'IR donanimi yok, yayim yapilamadi.';
+      notifyListeners();
+      return;
+    }
+    try {
+      final model = await IrdbParser.modelYukle('Samsung', 'TV', '7,7');
+      if (model.komutlar.isEmpty) {
+        _sonMesaj = 'Samsung/TV/7,7.csv bulunamadi veya bos.';
+        notifyListeners();
+        return;
+      }
+      final power = model.komutlar.firstWhere(
+        (k) => k.ad.toUpperCase() == 'POWER',
+        orElse: () => model.komutlar.first,
+      );
+      final timing = IrProtokol.komutaTimings(power);
+      if (timing == null) {
+        _sonMesaj = 'Protokol desteklenmiyor: ${power.protokol}';
+        notifyListeners();
+        return;
+      }
+      await IrServis.gonder(frekans: timing.$1, pattern: timing.$2);
+      _sonMesaj =
+          'irdb POWER yayildi (${power.protokol}, ${model.komutlar.length} komut bulundu).';
+    } catch (e) {
+      _sonMesaj = 'Parser yayim hatasi: $e';
     }
     notifyListeners();
   }

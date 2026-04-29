@@ -34,11 +34,17 @@ class IrTestView extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: p.irVar ? () => p.samsungPowerYay() : null,
                   icon: const Icon(Icons.power_settings_new),
-                  label: const Text('Samsung TV Power Yay'),
+                  label: const Text('Samsung TV Power (sabit)'),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton.icon(
+                  onPressed: p.irVar ? () => p.parserYoluylaYay() : null,
+                  icon: const Icon(Icons.dataset),
+                  label: const Text('Samsung TV Power (irdb parser)'),
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'Telefonu TV\'ye dogrult ve butona bas. TV acilip kapanmali.',
+                  'Telefonu TV\'ye dogrult. Iki buton da TV\'yi acmali/kapamalidir.',
                   textAlign: TextAlign.center,
                 ),
               ],
