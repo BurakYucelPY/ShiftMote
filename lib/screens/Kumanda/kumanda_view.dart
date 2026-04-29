@@ -29,7 +29,16 @@ class KumandaView extends StatelessWidget {
 
   Widget _govde(BuildContext context, KumandaProvider p) {
     if (p.yukleniyor) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 12),
+            Text('genel.yukleniyor'.tr()),
+          ],
+        ),
+      );
     }
     if (p.hata != null) {
       return Center(

@@ -34,14 +34,18 @@ class _AnasayfaState extends State<Anasayfa> with WidgetsBindingObserver {
     super.initState();
     _provider = AnasayfaProvider()..yenile();
     WidgetsBinding.instance.addObserver(this);
+    KumandaDeposu.degisim.addListener(_yenile);
   }
 
   @override
   void dispose() {
+    KumandaDeposu.degisim.removeListener(_yenile);
     WidgetsBinding.instance.removeObserver(this);
     _provider.dispose();
     super.dispose();
   }
+
+  void _yenile() => _provider.yenile();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

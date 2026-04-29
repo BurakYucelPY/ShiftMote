@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Kumanda {
@@ -43,6 +44,9 @@ class KumandaDeposu {
   static const String _anahtar = 'kumandalar_v1';
   static SharedPreferences? _prefs;
 
+  /// Liste her degistiginde tetiklenir; Anasayfa bunu dinleyip otomatik yeniler.
+  static final ValueNotifier<int> degisim = ValueNotifier<int>(0);
+
   static Future<void> baslat() async {
     _prefs ??= await SharedPreferences.getInstance();
   }
@@ -79,6 +83,7 @@ class KumandaDeposu {
     final yeniListe = [...mevcut, yeni];
     await _prefs!
         .setString(_anahtar, jsonEncode(yeniListe.map((k) => k.toJson()).toList()));
+    degisim.value++;
     return yeni;
   }
 
@@ -87,6 +92,7 @@ class KumandaDeposu {
     final yeniListe = tumunu().where((k) => k.id != id).toList();
     await _prefs!
         .setString(_anahtar, jsonEncode(yeniListe.map((k) => k.toJson()).toList()));
+    degisim.value++;
   }
 
   static Kumanda? bul(int id) {

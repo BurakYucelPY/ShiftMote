@@ -33,7 +33,16 @@ class KumandaEkleView extends StatelessWidget {
               title: Text(_baslik(p.adim)),
             ),
             body: p.yukleniyor
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 12),
+                        Text('genel.yukleniyor'.tr()),
+                      ],
+                    ),
+                  )
                 : p.hata != null
                     ? Center(
                         child: Padding(
