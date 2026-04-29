@@ -30,7 +30,7 @@ final List<StatefulShellBranch> branches = [
               final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
               return MaterialPage(
                 key: state.pageKey,
-                child: Kumanda(kumandaId: id),
+                child: KumandaSayfasi(kumandaId: id),
               );
             },
           ),
