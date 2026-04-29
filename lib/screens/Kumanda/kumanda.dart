@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,21 +52,21 @@ class KumandaProvider extends ChangeNotifier {
 
   Future<void> yay(IrKomut k) async {
     if (!_irVar) {
-      _sonAksiyon = 'IR donanimi yok.';
+      _sonAksiyon = 'kumanda_page.ir_yok'.tr();
       notifyListeners();
       return;
     }
     final timing = IrProtokol.komutaTimings(k);
     if (timing == null) {
-      _sonAksiyon = 'Protokol desteklenmiyor: ${k.protokol}';
+      _sonAksiyon = '${'kumanda_page.protokol_desteklenmiyor'.tr()}: ${k.protokol}';
       notifyListeners();
       return;
     }
     try {
       await IrServis.gonder(frekans: timing.$1, pattern: timing.$2);
-      _sonAksiyon = '${k.ad} gonderildi';
+      _sonAksiyon = k.ad;
     } catch (e) {
-      _sonAksiyon = 'Hata: $e';
+      _sonAksiyon = '${'genel.hata'.tr()}: $e';
     }
     notifyListeners();
   }

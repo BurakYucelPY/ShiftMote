@@ -37,14 +37,14 @@ class AnasayfaView extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Henuz kumanda eklenmedi.',
+                      'anasayfa_page.bos_baslik'.tr(),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       icon: const Icon(Icons.add),
-                      label: Text('kumanda_ekle'.tr()),
+                      label: Text('anasayfa_page.bos_aksiyon'.tr()),
                       onPressed: () =>
                           context.goNamed(Rotalar.kumandaEkleName),
                     ),

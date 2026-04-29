@@ -53,13 +53,13 @@ class KumandaEkleView extends StatelessWidget {
   String _baslik(EkleAdim a) {
     switch (a) {
       case EkleAdim.cihazTipi:
-        return 'Cihaz Tipi Sec';
+        return 'ekle_page.cihaz_tipi_sec'.tr();
       case EkleAdim.marka:
-        return 'Marka Sec';
+        return 'ekle_page.marka_sec'.tr();
       case EkleAdim.model:
-        return 'Model Sec';
+        return 'ekle_page.model_sec'.tr();
       case EkleAdim.ad:
-        return 'Isim Ver';
+        return 'ekle_page.isim_ver'.tr();
     }
   }
 }
@@ -78,7 +78,7 @@ class _SecimListesi extends StatelessWidget {
           child: TextField(
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
-              hintText: 'Ara...',
+              hintText: 'genel.ara'.tr(),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -87,7 +87,7 @@ class _SecimListesi extends StatelessWidget {
           ),
         ),
         if (liste.isEmpty)
-          const Expanded(child: Center(child: Text('Sonuc yok')))
+          Expanded(child: Center(child: Text('genel.sonuc_yok'.tr())))
         else
           Expanded(
             child: ListView.builder(
@@ -144,9 +144,9 @@ class _AdAdimiState extends State<_AdAdimi> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Marka: ${p.marka ?? '-'}'),
-                  Text('Cihaz tipi: ${p.cihazTipi ?? '-'}'),
-                  Text('Model: ${p.model ?? '-'}'),
+                  Text('${'ekle_page.marka'.tr()}: ${p.marka ?? '-'}'),
+                  Text('${'ekle_page.cihaz_tipi'.tr()}: ${p.cihazTipi ?? '-'}'),
+                  Text('${'ekle_page.model'.tr()}: ${p.model ?? '-'}'),
                 ],
               ),
             ),
@@ -154,9 +154,9 @@ class _AdAdimiState extends State<_AdAdimi> {
           const SizedBox(height: 20),
           TextField(
             controller: _ctrl,
-            decoration: const InputDecoration(
-              labelText: 'Kumanda adi',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: 'ekle_page.kumanda_adi'.tr(),
+              border: const OutlineInputBorder(),
             ),
             onChanged: p.adGuncelle,
           ),
@@ -169,7 +169,7 @@ class _AdAdimiState extends State<_AdAdimi> {
               if (!context.mounted) return;
               if (yeni == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Eksik bilgi var.')),
+                  SnackBar(content: Text('ekle_page.eksik_bilgi'.tr())),
                 );
                 return;
               }

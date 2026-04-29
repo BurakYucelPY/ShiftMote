@@ -12,6 +12,40 @@ kaydet: "Save"
 sil: "Delete"
 geri: "Back"
 
+genel:
+  yukleniyor: "Loading..."
+  hata: "An error occurred"
+  ara: "Search..."
+  sonuc_yok: "No results"
+  ir_yok_uyari: "This device has no IR emitter. Buttons are shown but transmission is not possible."
+
+anasayfa_page:
+  bos_baslik: "No remotes added yet"
+  bos_aksiyon: "Add your first remote"
+
+ekle_page:
+  cihaz_tipi_sec: "Select Device Type"
+  marka_sec: "Select Brand"
+  model_sec: "Select Model"
+  isim_ver: "Name It"
+  kumanda_adi: "Remote name"
+  marka: "Brand"
+  cihaz_tipi: "Device type"
+  model: "Model"
+  eksik_bilgi: "Missing information."
+
+kumanda_page:
+  komut_yok: "No commands in this model."
+  protokol_desteklenmiyor: "Protocol not supported"
+  ir_yok: "No IR hardware."
+
+ir_test_page:
+  ir_var: "IR Available"
+  ir_yok: "No IR"
+  samsung_sabit: "Samsung TV Power (fixed)"
+  samsung_parser: "Samsung TV Power (irdb parser)"
+  yonlendir: "Point the phone at the TV. Both buttons should toggle it."
+
 ayarlar_page:
   tema: "Theme"
   karanlik_mod: "Dark Mode"
@@ -28,7 +62,3 @@ hakkinda_page:
   irdb_attr: "probonopd/irdb open database"
   surum: "Version"
   not: "Works only on Android devices with an IR LED."
-
-genel:
-  yukleniyor: "Loading..."
-  hata: "An error occurred"

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class KumandaView extends StatelessWidget {
     }
     final komutlar = p.model?.komutlar ?? const [];
     if (komutlar.isEmpty) {
-      return const Center(child: Text('Bu modelde komut yok.'));
+      return Center(child: Text('kumanda_page.komut_yok'.tr()));
     }
     return Column(
       children: [
@@ -50,7 +51,7 @@ class KumandaView extends StatelessWidget {
             color: Theme.of(context).colorScheme.errorContainer,
             padding: const EdgeInsets.all(8),
             child: Text(
-              'Bu cihazda IR emitter yok. Butonlar gosterilir ama yayim yapilamaz.',
+              'genel.ir_yok_uyari'.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onErrorContainer,

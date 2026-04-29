@@ -12,6 +12,40 @@ kaydet: "Kaydet"
 sil: "Sil"
 geri: "Geri"
 
+genel:
+  yukleniyor: "Yükleniyor..."
+  hata: "Bir hata oluştu"
+  ara: "Ara..."
+  sonuc_yok: "Sonuç yok"
+  ir_yok_uyari: "Bu cihazda IR emitter yok. Butonlar gösterilir ama yayım yapılamaz."
+
+anasayfa_page:
+  bos_baslik: "Henüz kumanda eklenmedi"
+  bos_aksiyon: "İlk kumandanı ekle"
+
+ekle_page:
+  cihaz_tipi_sec: "Cihaz Tipi Seç"
+  marka_sec: "Marka Seç"
+  model_sec: "Model Seç"
+  isim_ver: "İsim Ver"
+  kumanda_adi: "Kumanda adı"
+  marka: "Marka"
+  cihaz_tipi: "Cihaz tipi"
+  model: "Model"
+  eksik_bilgi: "Eksik bilgi var."
+
+kumanda_page:
+  komut_yok: "Bu modelde komut yok."
+  protokol_desteklenmiyor: "Protokol desteklenmiyor"
+  ir_yok: "IR donanımı yok."
+
+ir_test_page:
+  ir_var: "IR Var"
+  ir_yok: "IR Yok"
+  samsung_sabit: "Samsung TV Power (sabit)"
+  samsung_parser: "Samsung TV Power (irdb parser)"
+  yonlendir: "Telefonu TV'ye doğrult. İki buton da TV'yi açıp kapamalıdır."
+
 ayarlar_page:
   tema: "Tema"
   karanlik_mod: "Karanlık Mod"
@@ -28,7 +62,3 @@ hakkinda_page:
   irdb_attr: "probonopd/irdb açık veritabanı"
   surum: "Sürüm"
   not: "Sadece IR LED'i olan Android cihazlarda çalışır."
-
-genel:
-  yukleniyor: "Yükleniyor..."
-  hata: "Bir hata oluştu"
