@@ -1,24 +1,26 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../db/kumanda_deposu.dart';
+import '../../ir/cihaz_kategorileri.dart';
 import '../../ir/irdb_parser.dart';
 import 'kumanda_ekle_view.dart';
 
-enum EkleAdim { cihazTipi, marka, model, ad }
+enum EkleAdim { kategori, marka, model, ad }
 
 class KumandaEkleProvider extends ChangeNotifier {
-  EkleAdim _adim = EkleAdim.cihazTipi;
+  EkleAdim _adim = EkleAdim.kategori;
   EkleAdim get adim => _adim;
 
-  String? _cihazTipi;
+  CihazKategorisi? _kategori;
   String? _marka;
-  String? _model;
+  KategoriModel? _model;
   String _ad = '';
 
-  String? get cihazTipi => _cihazTipi;
+  CihazKategorisi? get kategori => _kategori;
   String? get marka => _marka;
-  String? get model => _model;
+  KategoriModel? get model => _model;
   String get ad => _ad;
 
   bool _yukleniyor = false;
@@ -27,42 +29,37 @@ class KumandaEkleProvider extends ChangeNotifier {
   String? _hata;
   String? get hata => _hata;
 
-  List<String> _secenekler = const [];
-  List<String> get secenekler => _secenekler;
+  // Adim 2'de markalar, Adim 3'te modeller
+  List<String> _markalar = const [];
+  List<String> get markalar => _markalar;
+  List<KategoriModel> _modeller = const [];
+  List<KategoriModel> get modeller => _modeller;
 
   String _arama = '';
   String get arama => _arama;
-  List<String> get filtreliSecenekler {
-    if (_arama.isEmpty) return _secenekler;
+
+  List<String> get filtreliMarkalar {
+    if (_arama.isEmpty) return _markalar;
     final q = _arama.toLowerCase();
-    return _secenekler.where((s) => s.toLowerCase().contains(q)).toList();
+    return _markalar.where((m) => m.toLowerCase().contains(q)).toList();
   }
 
-  Future<void> baslat() async {
-    await _adimYukle(EkleAdim.cihazTipi);
+  List<String> get populerMevcut {
+    final kat = _kategori;
+    if (kat == null) return const [];
+    final set = _markalar.toSet();
+    return kat.populerMarkalar.where(set.contains).toList();
   }
 
-  Future<void> _adimYukle(EkleAdim yeni) async {
+  Future<void> kategoriSec(CihazKategorisi kat) async {
+    _kategori = kat;
     _yukleniyor = true;
     _hata = null;
     _arama = '';
+    _adim = EkleAdim.marka;
     notifyListeners();
     try {
-      switch (yeni) {
-        case EkleAdim.cihazTipi:
-          _secenekler = await IrdbParser.cihazTipleri();
-          break;
-        case EkleAdim.marka:
-          _secenekler = await IrdbParser.markalar(_cihazTipi!);
-          break;
-        case EkleAdim.model:
-          _secenekler = await IrdbParser.modeller(_marka!, _cihazTipi!);
-          break;
-        case EkleAdim.ad:
-          _secenekler = const [];
-          break;
-      }
-      _adim = yeni;
+      _markalar = await IrdbParser.markalarKategoriden(kat);
     } catch (e) {
       _hata = e.toString();
     }
@@ -70,24 +67,31 @@ class KumandaEkleProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sec(String secim) async {
-    switch (_adim) {
-      case EkleAdim.cihazTipi:
-        _cihazTipi = secim;
-        await _adimYukle(EkleAdim.marka);
-        break;
-      case EkleAdim.marka:
-        _marka = secim;
-        await _adimYukle(EkleAdim.model);
-        break;
-      case EkleAdim.model:
-        _model = secim;
-        _ad = '$_marka $_cihazTipi';
-        await _adimYukle(EkleAdim.ad);
-        break;
-      case EkleAdim.ad:
-        break;
+  Future<void> markaSec(String m) async {
+    _marka = m;
+    _yukleniyor = true;
+    _hata = null;
+    _arama = '';
+    _adim = EkleAdim.model;
+    notifyListeners();
+    try {
+      _modeller = await IrdbParser.modellerKategoriden(m, _kategori!);
+    } catch (e) {
+      _hata = e.toString();
     }
+    _yukleniyor = false;
+    notifyListeners();
+  }
+
+  void modelSec(KategoriModel m) {
+    _model = m;
+    _ad = '$_marka ${_kategori?.etiketKey.split('.').last ?? ''}'.trim();
+    // Daha okunakli varsayilan ad
+    if (_kategori != null) {
+      _ad = '$_marka ${_kategori!.etiketKey.tr()}'.trim();
+    }
+    _adim = EkleAdim.ad;
+    notifyListeners();
   }
 
   void aramaGuncelle(String s) {
@@ -102,34 +106,41 @@ class KumandaEkleProvider extends ChangeNotifier {
 
   Future<bool> geri() async {
     switch (_adim) {
-      case EkleAdim.cihazTipi:
-        return false; // sayfayi kapat
+      case EkleAdim.kategori:
+        return false;
       case EkleAdim.marka:
-        _marka = null;
-        await _adimYukle(EkleAdim.cihazTipi);
+        _kategori = null;
+        _markalar = const [];
+        _adim = EkleAdim.kategori;
+        notifyListeners();
         return true;
       case EkleAdim.model:
-        _model = null;
-        await _adimYukle(EkleAdim.marka);
+        _marka = null;
+        _modeller = const [];
+        _adim = EkleAdim.marka;
+        notifyListeners();
         return true;
       case EkleAdim.ad:
-        await _adimYukle(EkleAdim.model);
+        _model = null;
+        _adim = EkleAdim.model;
+        notifyListeners();
         return true;
     }
   }
 
   Future<Kumanda?> kaydet() async {
-    if (_ad.trim().isEmpty ||
-        _marka == null ||
-        _cihazTipi == null ||
-        _model == null) {
+    final kat = _kategori;
+    final mar = _marka;
+    final mod = _model;
+    if (_ad.trim().isEmpty || kat == null || mar == null || mod == null) {
       return null;
     }
     return await KumandaDeposu.ekle(
       ad: _ad.trim(),
-      marka: _marka!,
-      cihazTipi: _cihazTipi!,
-      model: _model!,
+      marka: mar,
+      cihazTipi: kat.etiketKey.tr(),
+      irdbKlasoru: mod.irdbKlasoru,
+      model: mod.dosya,
     );
   }
 }
@@ -147,7 +158,7 @@ class _KumandaEkleState extends State<KumandaEkle> {
   @override
   void initState() {
     super.initState();
-    _provider = KumandaEkleProvider()..baslat();
+    _provider = KumandaEkleProvider();
   }
 
   @override

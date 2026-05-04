@@ -12,6 +12,19 @@ kaydet: "Save"
 sil: "Delete"
 geri: "Back"
 
+cihaz:
+  tv: "Television"
+  klima: "Air Conditioner"
+  projektor: "Projector"
+  ses: "Audio System"
+  cd: "CD/Music"
+  dvd: "DVD/Blu-Ray"
+  uydu: "Satellite/Cable"
+  akilli_kutu: "Smart Box"
+  vantilator: "Fan"
+  kamera: "Camera"
+  diger: "Other"
+
 genel:
   yukleniyor: "Loading..."
   hata: "An error occurred"
@@ -24,13 +37,15 @@ anasayfa_page:
   bos_aksiyon: "Add your first remote"
 
 ekle_page:
-  cihaz_tipi_sec: "Select Device Type"
+  kategori_sec: "Device Type"
   marka_sec: "Select Brand"
   model_sec: "Select Model"
   isim_ver: "Name It"
+  populer_markalar: "Popular brands"
+  tumu: "All"
   kumanda_adi: "Remote name"
+  kategori: "Type"
   marka: "Brand"
-  cihaz_tipi: "Device type"
   model: "Model"
   eksik_bilgi: "Missing information."
 

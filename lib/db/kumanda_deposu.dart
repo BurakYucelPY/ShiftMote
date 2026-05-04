@@ -7,7 +7,8 @@ class Kumanda {
   final int id;
   final String ad;
   final String marka;
-  final String cihazTipi;
+  final String cihazTipi; // kullaniciya gosterilen Turkce etiket
+  final String irdbKlasoru; // ham irdb klasor adi (CSV bulmak icin)
   final String model; // CSV dosya adi (.csv haric), orn. "7,7"
   final DateTime olusturmaTarihi;
 
@@ -16,6 +17,7 @@ class Kumanda {
     required this.ad,
     required this.marka,
     required this.cihazTipi,
+    required this.irdbKlasoru,
     required this.model,
     required this.olusturmaTarihi,
   });
@@ -25,6 +27,7 @@ class Kumanda {
         'ad': ad,
         'marka': marka,
         'cihazTipi': cihazTipi,
+        'irdbKlasoru': irdbKlasoru,
         'model': model,
         'olusturmaTarihi': olusturmaTarihi.toIso8601String(),
       };
@@ -34,6 +37,9 @@ class Kumanda {
         ad: j['ad'] as String,
         marka: j['marka'] as String,
         cihazTipi: j['cihazTipi'] as String,
+        // Geri uyumluluk: eski kayitlarda irdbKlasoru yok, cihazTipi'yi kullan
+        irdbKlasoru:
+            (j['irdbKlasoru'] as String?) ?? (j['cihazTipi'] as String),
         model: j['model'] as String,
         olusturmaTarihi: DateTime.parse(j['olusturmaTarihi'] as String),
       );
@@ -66,6 +72,7 @@ class KumandaDeposu {
     required String ad,
     required String marka,
     required String cihazTipi,
+    required String irdbKlasoru,
     required String model,
   }) async {
     await baslat();
@@ -77,6 +84,7 @@ class KumandaDeposu {
       ad: ad,
       marka: marka,
       cihazTipi: cihazTipi,
+      irdbKlasoru: irdbKlasoru,
       model: model,
       olusturmaTarihi: DateTime.now(),
     );

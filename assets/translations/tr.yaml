@@ -12,6 +12,19 @@ kaydet: "Kaydet"
 sil: "Sil"
 geri: "Geri"
 
+cihaz:
+  tv: "Televizyon"
+  klima: "Klima"
+  projektor: "Projeksiyon"
+  ses: "Ses Sistemi"
+  cd: "CD/Müzik"
+  dvd: "DVD/Blu-Ray"
+  uydu: "Uydu / Kablo"
+  akilli_kutu: "Akıllı Kutu"
+  vantilator: "Vantilatör"
+  kamera: "Kamera"
+  diger: "Diğer"
+
 genel:
   yukleniyor: "Yükleniyor..."
   hata: "Bir hata oluştu"
@@ -24,13 +37,15 @@ anasayfa_page:
   bos_aksiyon: "İlk kumandanı ekle"
 
 ekle_page:
-  cihaz_tipi_sec: "Cihaz Tipi Seç"
+  kategori_sec: "Cihaz Türü"
   marka_sec: "Marka Seç"
   model_sec: "Model Seç"
   isim_ver: "İsim Ver"
+  populer_markalar: "Popüler markalar"
+  tumu: "Tümü"
   kumanda_adi: "Kumanda adı"
+  kategori: "Tür"
   marka: "Marka"
-  cihaz_tipi: "Cihaz tipi"
   model: "Model"
   eksik_bilgi: "Eksik bilgi var."
 

@@ -2,7 +2,21 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
+import 'cihaz_kategorileri.dart';
 import 'irdb_bootstrap.dart';
+
+/// Bir markanin bir curated kategoriye ait spesifik bir model dosyasini
+/// (hangi irdb klasoru altinda durdugu dahil) tarif eder.
+class KategoriModel {
+  final String marka;
+  final String irdbKlasoru; // ham irdb klasor adi (orn. 'TV', 'Plasma')
+  final String dosya; // CSV adi (.csv haric)
+  KategoriModel({
+    required this.marka,
+    required this.irdbKlasoru,
+    required this.dosya,
+  });
+}
 
 class IrKomut {
   final String ad;
@@ -73,6 +87,96 @@ class IrdbParser {
     }
     modeller.sort();
     return modeller;
+  }
+
+  /// Curated kategoriden marka listesi doner. Birden fazla irdb klasorunu
+  /// tarar ve set ile dedupe yapar.
+  static Future<List<String>> markalarKategoriden(
+      CihazKategorisi kat) async {
+    final root = await IrdbBootstrap.hazirla();
+    final dir = Directory(root);
+    if (!await dir.exists()) return [];
+
+    // Hangi ham klasor adlarini tarayacagiz?
+    final aranan = <String>{};
+    if (kat.irdbAdlari.isEmpty) {
+      // 'Diger' kategorisi: 10 kategori disindaki TUM klasor adlarini topla
+      final hepsi = <String>{};
+      await for (final marka in dir.list()) {
+        if (marka is! Directory) continue;
+        await for (final tip in marka.list()) {
+          if (tip is Directory) hepsi.add(p.basename(tip.path));
+        }
+      }
+      // Yukaridaki ana 10 kategoriye ait olanlari hepsiden cikar
+      final kapsanan = <String>{};
+      for (final k in CihazKategorileri.tumu) {
+        kapsanan.addAll(k.irdbAdlari);
+      }
+      aranan.addAll(hepsi.difference(kapsanan));
+    } else {
+      aranan.addAll(kat.irdbAdlari);
+    }
+
+    final markalar = <String>{};
+    await for (final marka in dir.list()) {
+      if (marka is! Directory) continue;
+      // Bu markanin altinda aranan klasor adlarinden biri var mi?
+      await for (final tip in marka.list()) {
+        if (tip is Directory && aranan.contains(p.basename(tip.path))) {
+          markalar.add(p.basename(marka.path));
+          break;
+        }
+      }
+    }
+    final list = markalar.toList()..sort();
+    return list;
+  }
+
+  /// Bir markanin bir curated kategorideki tum modellerini doner.
+  /// Birden fazla irdb klasorunden gelebilir (ornek: Samsung TV ve Samsung Plasma).
+  static Future<List<KategoriModel>> modellerKategoriden(
+      String marka, CihazKategorisi kat) async {
+    final root = await IrdbBootstrap.hazirla();
+    final markaDir = Directory(p.join(root, marka));
+    if (!await markaDir.exists()) return [];
+
+    final aranan = <String>{};
+    if (kat.irdbAdlari.isEmpty) {
+      // 'Diger': 10 kategoriye ait olmayan tum tip klasorlerini al
+      final kapsanan = <String>{};
+      for (final k in CihazKategorileri.tumu) {
+        kapsanan.addAll(k.irdbAdlari);
+      }
+      await for (final tip in markaDir.list()) {
+        if (tip is Directory) {
+          final ad = p.basename(tip.path);
+          if (!kapsanan.contains(ad)) aranan.add(ad);
+        }
+      }
+    } else {
+      aranan.addAll(kat.irdbAdlari);
+    }
+
+    final sonuc = <KategoriModel>[];
+    for (final klasor in aranan) {
+      final tipDir = Directory(p.join(markaDir.path, klasor));
+      if (!await tipDir.exists()) continue;
+      await for (final f in tipDir.list()) {
+        if (f is File && f.path.toLowerCase().endsWith('.csv')) {
+          sonuc.add(KategoriModel(
+            marka: marka,
+            irdbKlasoru: klasor,
+            dosya: p.basenameWithoutExtension(f.path),
+          ));
+        }
+      }
+    }
+    sonuc.sort((a, b) {
+      final c = a.irdbKlasoru.compareTo(b.irdbKlasoru);
+      return c != 0 ? c : a.dosya.compareTo(b.dosya);
+    });
+    return sonuc;
   }
 
   /// Bir modelin CSV'sini parse edip komut listesi doner.

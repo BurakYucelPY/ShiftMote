@@ -39,7 +39,7 @@ class KumandaProvider extends ChangeNotifier {
     try {
       _model = await IrdbParser.modelYukle(
         _kumanda!.marka,
-        _kumanda!.cihazTipi,
+        _kumanda!.irdbKlasoru,
         _kumanda!.model,
       );
     } catch (e) {
