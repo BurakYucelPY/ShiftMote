@@ -1,11 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 import '../../Route/identify_routes.dart';
-import '../../app_drawer.dart';
-import 'ayarlar.dart';
+import '../../theme/app_theme.dart';
 
 class AyarlarView extends StatelessWidget {
   const AyarlarView({super.key});
@@ -13,42 +11,26 @@ class AyarlarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => AppDrawer.open(),
-        ),
-        title: Text('ayarlar'.tr()),
-      ),
-      body: Consumer<AyarlarProvider>(
-        builder: (context, ayar, _) => ListView(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(title: Text('ayarlar.baslik'.tr())),
+      body: SafeArea(
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(20),
           children: [
-            ListTile(
-              leading: Icon(
-                ayar.karanlikMod ? Icons.dark_mode : Icons.light_mode,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              title: Text('ayarlar_page.tema'.tr()),
-              subtitle: Text(
-                ayar.karanlikMod
-                    ? 'ayarlar_page.karanlik_mod'.tr()
-                    : 'ayarlar_page.acik_mod'.tr(),
-              ),
-              trailing: Switch(
-                value: ayar.karanlikMod,
-                onChanged: (_) => ayar.temaDegistir(),
-              ),
+            _satir(
+              context,
+              ikon: Icons.language_rounded,
+              etiket: 'ayarlar.dil'.tr(),
+              onTap: () => context
+                  .push('${Rotalar.ayarlarPath}/${Rotalar.dilPath}'),
             ),
-            const Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.language,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              title: Text('ayarlar_page.dil_secim'.tr()),
-              subtitle: Text(_dilEtiketi(context.locale.languageCode)),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.goNamed(Rotalar.dilName),
+            const SizedBox(height: 12),
+            _satir(
+              context,
+              ikon: Icons.info_outline_rounded,
+              etiket: 'ayarlar.hakkinda'.tr(),
+              onTap: () => context.push(Rotalar.hakkindaPath),
             ),
           ],
         ),
@@ -56,14 +38,27 @@ class AyarlarView extends StatelessWidget {
     );
   }
 
-  String _dilEtiketi(String code) {
-    switch (code) {
-      case 'tr':
-        return 'Türkçe';
-      case 'en':
-        return 'English';
-      default:
-        return code;
-    }
+  Widget _satir(BuildContext context,
+      {required IconData ikon,
+      required String etiket,
+      required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Neumorphic(
+        style: NeuPresets.button(depth: 3, radius: AppRadius.md),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(children: [
+            Icon(ikon, color: AppColors.accent, size: 20),
+            const SizedBox(width: 14),
+            Expanded(
+                child: Text(etiket,
+                    style: Theme.of(context).textTheme.titleMedium)),
+            const Icon(Icons.chevron_right_rounded,
+                color: AppColors.textSecondary),
+          ]),
+        ),
+      ),
+    );
   }
 }

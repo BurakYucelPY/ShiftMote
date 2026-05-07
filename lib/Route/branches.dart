@@ -2,35 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../screens/Anasayfa/anasayfa.dart';
-import '../screens/Ayarlar/ayarlar.dart';
-import '../screens/Ayarlar/Dil/dil.dart';
-import '../screens/Hakkında/hakkinda.dart';
+import '../screens/Favoriler/favoriler.dart';
 import '../screens/Kumanda/kumanda.dart';
-import '../screens/KumandaEkle/kumanda_ekle.dart';
+import '../screens/Odalar/OdaDetay/oda_detay.dart';
+import '../screens/Odalar/odalar.dart';
 import 'identify_routes.dart';
 
 final List<StatefulShellBranch> branches = [
-  // BRANCH 0: Anasayfa (alt route: Kumanda detayı)
+  // BRANCH 0: Anasayfa (alt: kumanda detayi)
   StatefulShellBranch(
     initialLocation: Rotalar.anasayfaPath,
     routes: [
       GoRoute(
         path: Rotalar.anasayfaPath,
         name: Rotalar.anasayfaName,
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const Anasayfa(),
-        ),
+        pageBuilder: (c, s) =>
+            MaterialPage(key: s.pageKey, child: const Anasayfa()),
         routes: [
           GoRoute(
-            path: Rotalar.kumandaPath, // /anasayfa/kumanda/:id
+            path: Rotalar.kumandaPath,
             name: Rotalar.kumandaName,
-            pageBuilder: (context, state) {
-              final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+            pageBuilder: (c, s) {
+              final id = int.tryParse(s.pathParameters['id'] ?? '0') ?? 0;
               return MaterialPage(
-                key: state.pageKey,
-                child: KumandaSayfasi(kumandaId: id),
-              );
+                  key: s.pageKey, child: KumandaSayfasi(kumandaId: id));
             },
           ),
         ],
@@ -38,57 +33,39 @@ final List<StatefulShellBranch> branches = [
     ],
   ),
 
-  // BRANCH 1: KumandaEkle
+  // BRANCH 1: Odalar (alt: oda detayi)
   StatefulShellBranch(
-    initialLocation: Rotalar.kumandaEklePath,
+    initialLocation: Rotalar.odalarPath,
     routes: [
       GoRoute(
-        path: Rotalar.kumandaEklePath,
-        name: Rotalar.kumandaEkleName,
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const KumandaEkle(),
-        ),
-      ),
-    ],
-  ),
-
-  // BRANCH 2: Ayarlar (alt route: Dil)
-  StatefulShellBranch(
-    initialLocation: Rotalar.ayarlarPath,
-    routes: [
-      GoRoute(
-        path: Rotalar.ayarlarPath,
-        name: Rotalar.ayarlarName,
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const Ayarlar(),
-        ),
+        path: Rotalar.odalarPath,
+        name: Rotalar.odalarName,
+        pageBuilder: (c, s) =>
+            MaterialPage(key: s.pageKey, child: const Odalar()),
         routes: [
           GoRoute(
-            path: Rotalar.dilPath, // /ayarlar/dil
-            name: Rotalar.dilName,
-            pageBuilder: (context, state) => MaterialPage(
-              key: state.pageKey,
-              child: const Dil(),
-            ),
+            path: Rotalar.odaDetayPath,
+            name: Rotalar.odaDetayName,
+            pageBuilder: (c, s) {
+              final id = s.pathParameters['id'] ?? '';
+              return MaterialPage(
+                  key: s.pageKey, child: OdaDetay(odaId: id));
+            },
           ),
         ],
       ),
     ],
   ),
 
-  // BRANCH 3: Hakkında
+  // BRANCH 2: Favoriler
   StatefulShellBranch(
-    initialLocation: Rotalar.hakkindaPath,
+    initialLocation: Rotalar.favorilerPath,
     routes: [
       GoRoute(
-        path: Rotalar.hakkindaPath,
-        name: Rotalar.hakkindaName,
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const Hakkinda(),
-        ),
+        path: Rotalar.favorilerPath,
+        name: Rotalar.favorilerName,
+        pageBuilder: (c, s) =>
+            MaterialPage(key: s.pageKey, child: const Favoriler()),
       ),
     ],
   ),

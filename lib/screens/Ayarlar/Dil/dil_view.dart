@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../theme/app_theme.dart';
+
 class DilView extends StatelessWidget {
   const DilView({super.key});
 
@@ -9,13 +11,8 @@ class DilView extends StatelessWidget {
   Widget build(BuildContext context) {
     final mevcut = context.locale.languageCode;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        title: Text('dil'.tr()),
-      ),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(title: Text('dil'.tr())),
       body: ListView(
         children: [
           _dilSec(context, 'tr', 'dil_page.turkce'.tr(), mevcut == 'tr'),
@@ -29,9 +26,9 @@ class DilView extends StatelessWidget {
     return ListTile(
       leading: Icon(
         secili ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-        color: secili ? Theme.of(context).colorScheme.primary : null,
+        color: secili ? AppColors.accent : AppColors.textSecondary,
       ),
-      title: Text(etiket),
+      title: Text(etiket, style: const TextStyle(color: AppColors.textPrimary)),
       onTap: () async {
         await context.setLocale(Locale(kod));
         if (context.mounted) context.pop();

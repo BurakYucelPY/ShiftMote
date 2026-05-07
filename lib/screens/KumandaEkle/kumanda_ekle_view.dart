@@ -1,12 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../Route/identify_routes.dart';
-import '../../app_drawer.dart';
+import '../../db/oda_deposu.dart';
 import '../../ir/cihaz_kategorileri.dart';
-import '../../ir/irdb_parser.dart';
+import '../../theme/app_theme.dart';
+import '../../theme/modern_presets.dart';
+import '../../theme/theme_provider.dart';
+import '../../widgets/ir_gosterge.dart';
 import 'kumanda_ekle.dart';
 
 class KumandaEkleView extends StatelessWidget {
@@ -18,23 +20,28 @@ class KumandaEkleView extends StatelessWidget {
       builder: (context, p, _) {
         return PopScope(
           canPop: p.adim == EkleAdim.kategori,
-          onPopInvoked: (didPop) async {
+          onPopInvokedWithResult: (didPop, _) async {
             if (!didPop) await p.geri();
           },
           child: Scaffold(
+            backgroundColor: AppColors.background,
             appBar: AppBar(
-              leading: p.adim == EkleAdim.kategori
-                  ? IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () => AppDrawer.open(),
-                    )
-                  : IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () => p.geri(),
-                    ),
               title: Text(_baslik(p.adim)),
+              actions: p.adim == EkleAdim.dene
+                  ? const [
+                      Padding(
+                        padding: EdgeInsets.only(right: 14),
+                        child: Center(child: IrGosterge()),
+                      ),
+                    ]
+                  : null,
             ),
-            body: _govde(context, p),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: _icerik(context, p),
+              ),
+            ),
           ),
         );
       },
@@ -43,294 +50,579 @@ class KumandaEkleView extends StatelessWidget {
 
   String _baslik(EkleAdim a) {
     switch (a) {
-      case EkleAdim.kategori:
-        return 'ekle_page.kategori_sec'.tr();
-      case EkleAdim.marka:
-        return 'ekle_page.marka_sec'.tr();
-      case EkleAdim.model:
-        return 'ekle_page.model_sec'.tr();
-      case EkleAdim.ad:
-        return 'ekle_page.isim_ver'.tr();
+      case EkleAdim.kategori: return 'kumanda_ekle.kategori_baslik'.tr();
+      case EkleAdim.marka: return 'kumanda_ekle.marka_baslik'.tr();
+      case EkleAdim.dene: return 'kumanda_ekle.dene_baslik'.tr();
+      case EkleAdim.ad: return 'kumanda_ekle.ad_baslik'.tr();
     }
   }
 
-  Widget _govde(BuildContext context, KumandaEkleProvider p) {
-    if (p.yukleniyor) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 12),
-            Text('genel.yukleniyor'.tr()),
-          ],
-        ),
-      );
+  Widget _icerik(BuildContext context, KumandaEkleProvider p) {
+    final hata = p.hata;
+    if (hata != null) {
+      return Center(child: Text(hata));
     }
-    if (p.hata != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text('${'genel.hata'.tr()}: ${p.hata}'),
-        ),
-      );
+    if (p.yukleniyor && p.adim != EkleAdim.dene) {
+      return const Center(child: CircularProgressIndicator());
     }
     switch (p.adim) {
-      case EkleAdim.kategori:
-        return _KategoriGrid(provider: p);
-      case EkleAdim.marka:
-        return _MarkaListesi(provider: p);
-      case EkleAdim.model:
-        return _ModelListesi(provider: p);
-      case EkleAdim.ad:
-        return _AdAdimi(provider: p);
+      case EkleAdim.kategori: return _Kategoriler(p: p);
+      case EkleAdim.marka: return _Markalar(p: p);
+      case EkleAdim.dene: return _Dene(p: p);
+      case EkleAdim.ad: return _AdVer(p: p);
     }
   }
 }
 
-class _KategoriGrid extends StatelessWidget {
-  final KumandaEkleProvider provider;
-  const _KategoriGrid({required this.provider});
+class _Kategoriler extends StatelessWidget {
+  final KumandaEkleProvider p;
+  const _Kategoriler({required this.p});
 
   @override
   Widget build(BuildContext context) {
-    const tum = CihazKategorileri.tumu;
+    final tp = context.watch<ThemeProvider>();
+    final isClassic = tp.isClassic;
     return GridView.builder(
-      padding: const EdgeInsets.all(12),
+      physics: const BouncingScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 1.4,
+        crossAxisCount: 3,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 0.95,
       ),
-      itemCount: tum.length,
-      itemBuilder: (context, i) {
-        final k = tum[i];
-        return Material(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(14),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(14),
-            onTap: () => provider.kategoriSec(k),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    k.ikon,
-                    size: 36,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    k.etiketKey.tr(),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ],
-              ),
-            ),
-          ),
+      itemCount: CihazKategorileri.tumu.length,
+      itemBuilder: (c, i) {
+        final k = CihazKategorileri.tumu[i];
+        return GestureDetector(
+          onTap: () => p.kategoriSec(k),
+          child: isClassic
+              ? Neumorphic(
+                  style: NeuPresets.button(depth: 5, radius: AppRadius.md),
+                  child: _ic(context, k),
+                )
+              : Container(
+                  decoration: ModernPresets.unselectedChip(radius: AppRadius.md),
+                  child: _ic(context, k),
+                ),
         );
       },
     );
   }
+
+  Widget _ic(BuildContext c, CihazKategorisi k) => Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(k.ikon, color: AppColors.accent, size: 32),
+            const SizedBox(height: 8),
+            Text(k.etiketKey.tr(),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(c).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600)),
+          ],
+        ),
+      );
 }
 
-class _MarkaListesi extends StatelessWidget {
-  final KumandaEkleProvider provider;
-  const _MarkaListesi({required this.provider});
+class _Markalar extends StatelessWidget {
+  final KumandaEkleProvider p;
+  const _Markalar({required this.p});
 
   @override
   Widget build(BuildContext context) {
-    final filtreli = provider.filtreliMarkalar;
-    final populer = provider.populerMevcut;
-    final aramaAktif = provider.arama.isNotEmpty;
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: TextField(
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              hintText: 'genel.ara'.tr(),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+    final tp = context.watch<ThemeProvider>();
+    final isClassic = tp.isClassic;
+    return Column(children: [
+      isClassic
+          ? Neumorphic(
+              style: NeuPresets.pressed(radius: AppRadius.md),
+              child: _arama(context),
+            )
+          : Container(
+              decoration: ModernPresets.inset(radius: AppRadius.md),
+              child: _arama(context),
             ),
-            onChanged: provider.aramaGuncelle,
-          ),
+      const SizedBox(height: 12),
+      if (p.populerMevcut.isNotEmpty) ...[
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text('kumanda_ekle.populer'.tr(),
+              style: Theme.of(context).textTheme.bodySmall),
         ),
-        Expanded(
-          child: filtreli.isEmpty
-              ? Center(child: Text('genel.sonuc_yok'.tr()))
-              : ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  children: [
-                    if (!aramaAktif && populer.isNotEmpty) ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Text(
-                          'ekle_page.populer_markalar'.tr(),
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                        ),
-                      ),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: populer
-                            .map((m) => ActionChip(
-                                  label: Text(m),
-                                  onPressed: () => provider.markaSec(m),
-                                ))
-                            .toList(),
-                      ),
-                      const SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Text(
-                          'ekle_page.tumu'.tr(),
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                        ),
-                      ),
-                    ],
-                    ...filtreli.map(
-                      (m) => ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(m),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () => provider.markaSec(m),
-                      ),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: p.populerMevcut
+              .map((m) => GestureDetector(
+                    onTap: () => p.markaSec(m),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: ModernPresets.selectedChip(
+                          radius: AppRadius.sm),
+                      child: Text(m,
+                          style: const TextStyle(
+                              color: AppColors.accent, fontSize: 12)),
                     ),
-                  ],
-                ),
+                  ))
+              .toList(),
         ),
+        const SizedBox(height: 12),
+      ],
+      Expanded(
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: p.filtreliMarkalar.length,
+          itemBuilder: (c, i) {
+            final m = p.filtreliMarkalar[i];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: GestureDetector(
+                onTap: () => p.markaSec(m),
+                child: isClassic
+                    ? Neumorphic(
+                        style: NeuPresets.button(
+                            depth: 3, radius: AppRadius.md),
+                        child: _markaIc(context, m),
+                      )
+                    : Container(
+                        decoration: ModernPresets.card(),
+                        child: _markaIc(context, m),
+                      ),
+              ),
+            );
+          },
+        ),
+      ),
+    ]);
+  }
+
+  Widget _arama(BuildContext c) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: TextField(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: 'kumanda_ekle.marka_ara'.tr(),
+            hintStyle: const TextStyle(color: AppColors.textSecondary),
+            prefixIcon: const Icon(Icons.search,
+                color: AppColors.textSecondary, size: 20),
+          ),
+          onChanged: p.aramaGuncelle,
+          style: const TextStyle(color: AppColors.textPrimary),
+        ),
+      );
+
+  Widget _markaIc(BuildContext c, String marka) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(children: [
+          Expanded(
+              child: Text(marka,
+                  style: Theme.of(c)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w500))),
+          const Icon(Icons.chevron_right_rounded,
+              color: AppColors.textSecondary),
+        ]),
+      );
+}
+
+class _Dene extends StatelessWidget {
+  final KumandaEkleProvider p;
+  const _Dene({required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    if (p.bittim) {
+      return _Bitti(p: p);
+    }
+    if (p.yukleniyor) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (p.modelToplam == 0) {
+      return Center(
+        child: Text('kumanda_ekle.model_yok'.tr(),
+            style: Theme.of(context).textTheme.bodyMedium),
+      );
+    }
+    final ilerleme = '${p.modelIndex + 1} / ${p.modelToplam}';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 8),
+        Text('${p.marka}',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineSmall),
+        const SizedBox(height: 4),
+        Text(ilerleme,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 24),
+        Text('kumanda_ekle.dene_aciklama'.tr(),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium),
+        const Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _OkButonu(
+              ikon: Icons.chevron_left_rounded,
+              aktif: p.oncekiVarMi,
+              onTap: p.oncekiModel,
+            ),
+            const SizedBox(width: 24),
+            _GucButonu(p: p),
+            const SizedBox(width: 24),
+            _OkButonu(
+              ikon: Icons.chevron_right_rounded,
+              aktif: p.sonrakiVarMi,
+              onTap: p.sonrakiModel,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Text('kumanda_ekle.guc'.tr(),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium),
+        const Spacer(),
+        Text('kumanda_ekle.cihaz_tepki'.tr(),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _CevapButonu(
+                etiket: 'kumanda_ekle.hayir'.tr(),
+                ikon: Icons.close_rounded,
+                renk: AppColors.error,
+                onTap: p.cevapHayir,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _CevapButonu(
+                etiket: 'kumanda_ekle.evet'.tr(),
+                ikon: Icons.check_rounded,
+                renk: AppColors.success,
+                onTap: p.cevapEvet,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
       ],
     );
   }
 }
 
-class _ModelListesi extends StatelessWidget {
-  final KumandaEkleProvider provider;
-  const _ModelListesi({required this.provider});
+class _GucButonu extends StatefulWidget {
+  final KumandaEkleProvider p;
+  const _GucButonu({required this.p});
+
+  @override
+  State<_GucButonu> createState() => _GucButonuState();
+}
+
+class _GucButonuState extends State<_GucButonu> {
+  bool _basili = false;
 
   @override
   Widget build(BuildContext context) {
-    final liste = provider.modeller;
-    if (liste.isEmpty) {
-      return Center(child: Text('genel.sonuc_yok'.tr()));
-    }
-    // Birden fazla irdb klasoru varsa basliklarla grupla
-    final klasorler = <String, List<KategoriModel>>{};
-    for (final m in liste) {
-      klasorler.putIfAbsent(m.irdbKlasoru, () => []).add(m);
-    }
-    return ListView(
-      padding: const EdgeInsets.all(8),
-      children: [
-        for (final entry in klasorler.entries) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
-            child: Text(
-              entry.key,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+    final aktif = widget.p.powerHazir;
+    return GestureDetector(
+      onTapDown: aktif ? (_) => setState(() => _basili = true) : null,
+      onTapCancel: aktif ? () => setState(() => _basili = false) : null,
+      onTapUp: aktif
+          ? (_) {
+              setState(() => _basili = false);
+              widget.p.gucGonder();
+            }
+          : null,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 80),
+        scale: _basili ? 0.94 : 1.0,
+        child: Neumorphic(
+          style: NeuPresets.circle(
+            depth: _basili ? -3 : 6,
+            intensity: 0.6,
+          ),
+          child: SizedBox(
+            width: 140,
+            height: 140,
+            child: Center(
+              child: Icon(
+                Icons.power_settings_new_rounded,
+                size: 64,
+                color: aktif ? AppColors.accent : AppColors.textTertiary,
+              ),
             ),
           ),
-          ...entry.value.map(
-            (m) => ListTile(
-              title: Text(m.dosya),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => provider.modelSec(m),
+        ),
+      ),
+    );
+  }
+}
+
+class _OkButonu extends StatefulWidget {
+  final IconData ikon;
+  final bool aktif;
+  final VoidCallback onTap;
+  const _OkButonu({
+    required this.ikon,
+    required this.aktif,
+    required this.onTap,
+  });
+
+  @override
+  State<_OkButonu> createState() => _OkButonuState();
+}
+
+class _OkButonuState extends State<_OkButonu> {
+  bool _basili = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.aktif ? (_) => setState(() => _basili = true) : null,
+      onTapCancel: widget.aktif ? () => setState(() => _basili = false) : null,
+      onTapUp: widget.aktif
+          ? (_) {
+              setState(() => _basili = false);
+              widget.onTap();
+            }
+          : null,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 80),
+        scale: _basili ? 0.92 : 1.0,
+        child: Neumorphic(
+          style: NeuPresets.circle(
+            depth: _basili ? -2 : 4,
+            intensity: 0.55,
+          ),
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: Center(
+              child: Icon(
+                widget.ikon,
+                size: 28,
+                color: widget.aktif
+                    ? AppColors.textPrimary
+                    : AppColors.textTertiary,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CevapButonu extends StatelessWidget {
+  final String etiket;
+  final IconData ikon;
+  final Color renk;
+  final VoidCallback onTap;
+  const _CevapButonu({
+    required this.etiket,
+    required this.ikon,
+    required this.renk,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Neumorphic(
+        style: NeuPresets.button(depth: 4, radius: AppRadius.lg),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(ikon, color: renk, size: 22),
+              const SizedBox(width: 8),
+              Text(etiket,
+                  style: TextStyle(
+                      color: renk,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Bitti extends StatelessWidget {
+  final KumandaEkleProvider p;
+  const _Bitti({required this.p});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.search_off_rounded,
+              size: 56, color: AppColors.textSecondary),
+          const SizedBox(height: 16),
+          Text('kumanda_ekle.tum_modeller'.tr(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Text('kumanda_ekle.geri_marka'.tr(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium),
+          const SizedBox(height: 24),
+          GestureDetector(
+            onTap: () => p.geri(),
+            child: Neumorphic(
+              style: NeuPresets.button(depth: 4),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 24, vertical: 14),
+                child: Text('geri'.tr(),
+                    style: const TextStyle(
+                        color: AppColors.accent,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600)),
+              ),
             ),
           ),
         ],
-      ],
+      ),
     );
   }
 }
 
-class _AdAdimi extends StatefulWidget {
-  final KumandaEkleProvider provider;
-  const _AdAdimi({required this.provider});
+class _AdVer extends StatefulWidget {
+  final KumandaEkleProvider p;
+  const _AdVer({required this.p});
 
   @override
-  State<_AdAdimi> createState() => _AdAdimiState();
+  State<_AdVer> createState() => _AdVerState();
 }
 
-class _AdAdimiState extends State<_AdAdimi> {
-  late final TextEditingController _ctrl;
+class _AdVerState extends State<_AdVer> {
+  late TextEditingController _controller;
+  List<Oda> _odalar = [];
 
   @override
   void initState() {
     super.initState();
-    _ctrl = TextEditingController(text: widget.provider.ad);
+    _controller = TextEditingController(text: widget.p.ad);
+    _odalar = OdaDeposu.tumunu();
   }
 
   @override
   void dispose() {
-    _ctrl.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final p = widget.provider;
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      '${'ekle_page.kategori'.tr()}: ${p.kategori?.etiketKey.tr() ?? '-'}'),
-                  Text('${'ekle_page.marka'.tr()}: ${p.marka ?? '-'}'),
-                  Text('${'ekle_page.model'.tr()}: ${p.model?.dosya ?? '-'}'),
-                ],
-              ),
-            ),
+    final tp = context.watch<ThemeProvider>();
+    final isClassic = tp.isClassic;
+    final p = widget.p;
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      children: [
+        Text('kumanda_ekle.ad_etiket'.tr(),
+            style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        isClassic
+            ? Neumorphic(
+                style: NeuPresets.pressed(radius: AppRadius.md),
+                child: _adInput())
+            : Container(
+                decoration: ModernPresets.inset(radius: AppRadius.md),
+                child: _adInput()),
+        const SizedBox(height: 24),
+        if (_odalar.isNotEmpty) ...[
+          Text('kumanda_ekle.oda_secin'.tr(),
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _odaCip(null, 'kumanda_ekle.oda_yok'.tr(), p, isClassic),
+              ..._odalar.map((o) => _odaCip(o.id, o.ad, p, isClassic)),
+            ],
           ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: _ctrl,
-            decoration: InputDecoration(
-              labelText: 'ekle_page.kumanda_adi'.tr(),
-              border: const OutlineInputBorder(),
-            ),
-            onChanged: p.adGuncelle,
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.save),
-            label: Text('kaydet'.tr()),
-            onPressed: () async {
-              final yeni = await p.kaydet();
-              if (!context.mounted) return;
-              if (yeni == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('ekle_page.eksik_bilgi'.tr())),
-                );
-                return;
-              }
-              context.goNamed(Rotalar.anasayfaName);
-            },
-          ),
+          const SizedBox(height: 24),
         ],
+        SizedBox(
+          width: double.infinity,
+          child: GestureDetector(
+            onTap: () async {
+              final k = await p.kaydet();
+              if (k != null && context.mounted) {
+                context.go(
+                    '/anasayfa/kumanda/${k.id}');
+              }
+            },
+            child: isClassic
+                ? Neumorphic(
+                    style: NeuPresets.button(depth: 5),
+                    child: _kaydetIc())
+                : Container(
+                    decoration: ModernPresets.button(), child: _kaydetIc()),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _adInput() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: 'kumanda_ekle.ad_hint'.tr(),
+              hintStyle: const TextStyle(color: AppColors.textSecondary)),
+          style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+          onChanged: widget.p.adGuncelle,
+        ),
+      );
+
+  Widget _odaCip(String? id, String etiket, KumandaEkleProvider p, bool isClassic) {
+    final secili = p.odaId == id;
+    return GestureDetector(
+      onTap: () => p.odaSec(id),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: secili
+            ? ModernPresets.selectedChip(radius: AppRadius.md)
+            : ModernPresets.unselectedChip(radius: AppRadius.md),
+        child: Text(etiket,
+            style: TextStyle(
+                color: secili ? AppColors.accent : AppColors.textPrimary,
+                fontSize: 13,
+                fontWeight: FontWeight.w500)),
       ),
     );
   }
+
+  Widget _kaydetIc() => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Center(
+          child: Text('genel.kaydet'.tr(),
+              style: const TextStyle(
+                  color: AppColors.accent,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600)),
+        ),
+      );
 }

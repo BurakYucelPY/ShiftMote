@@ -1,8 +1,15 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-import '../app_drawer.dart';
+import '../screens/Ayarlar/Dil/dil.dart';
+import '../screens/Ayarlar/ayarlar.dart';
+import '../screens/Hakkında/hakkinda.dart';
+import '../screens/KumandaEkle/kumanda_ekle.dart';
+import '../screens/OdaEkle/oda_ekle.dart';
+import '../theme/app_theme.dart';
+import '../theme/theme_provider.dart';
+import '../widgets/custom_bottom_nav.dart';
 import 'branches.dart';
 import 'identify_routes.dart';
 
@@ -11,57 +18,55 @@ final GoRouter router = GoRouter(
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
+        final tp = context.watch<ThemeProvider>();
         return Scaffold(
-          key: AppDrawer.key,
-          drawer: AppDrawer.build(context),
-          body: Container(
-            key: ValueKey('body_${context.locale.languageCode}'),
-            child: navigationShell,
-          ),
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
+          backgroundColor: AppColors.background,
+          body: navigationShell,
+          bottomNavigationBar: CustomBottomNav(
+            currentIndex: navigationShell.currentIndex,
+            onTap: (i) => navigationShell.goBranch(
+              i,
+              initialLocation: i == navigationShell.currentIndex,
             ),
-            child: BottomAppBar(
-              color: Colors.transparent,
-              elevation: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _navIkon(context, navigationShell, 0, Icons.home),
-                  _navIkon(
-                      context, navigationShell, 1, Icons.add_circle_outline),
-                  _navIkon(context, navigationShell, 2, Icons.settings),
-                  _navIkon(context, navigationShell, 3, Icons.info_outline),
-                ],
-              ),
-            ),
+            themeProvider: tp,
           ),
         );
       },
       branches: branches,
     ),
+
+    // Detay rotalari (shell disinda — bottom-nav gizli)
+    GoRoute(
+      path: Rotalar.kumandaEklePath,
+      name: Rotalar.kumandaEkleName,
+      pageBuilder: (c, s) =>
+          MaterialPage(key: s.pageKey, child: const KumandaEkle()),
+    ),
+    GoRoute(
+      path: Rotalar.odaEklePath,
+      name: Rotalar.odaEkleName,
+      pageBuilder: (c, s) =>
+          MaterialPage(key: s.pageKey, child: const OdaEkle()),
+    ),
+    GoRoute(
+      path: Rotalar.ayarlarPath,
+      name: Rotalar.ayarlarName,
+      pageBuilder: (c, s) =>
+          MaterialPage(key: s.pageKey, child: const Ayarlar()),
+      routes: [
+        GoRoute(
+          path: Rotalar.dilPath,
+          name: Rotalar.dilName,
+          pageBuilder: (c, s) =>
+              MaterialPage(key: s.pageKey, child: const Dil()),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: Rotalar.hakkindaPath,
+      name: Rotalar.hakkindaName,
+      pageBuilder: (c, s) =>
+          MaterialPage(key: s.pageKey, child: const Hakkinda()),
+    ),
   ],
 );
-
-Widget _navIkon(BuildContext context, StatefulNavigationShell shell,
-    int index, IconData icon) {
-  final aktif = shell.currentIndex == index;
-  return IconButton(
-    icon: Icon(
-      icon,
-      color: aktif
-          ? Theme.of(context).colorScheme.primary
-          : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-    ),
-    iconSize: aktif ? 32 : 28,
-    onPressed: () {
-      AppDrawer.close();
-      shell.goBranch(index, initialLocation: shell.currentIndex == index);
-    },
-  );
-}

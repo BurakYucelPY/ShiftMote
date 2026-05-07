@@ -193,9 +193,8 @@ class IrdbParser {
     for (int i = 0; i < satirlar.length; i++) {
       final satir = satirlar[i].trim();
       if (satir.isEmpty) continue;
-      // Bas satir: functionname,protocol,device,subdevice,function
       if (i == 0 && satir.toLowerCase().startsWith('functionname')) continue;
-      final parts = satir.split(',');
+      final parts = satir.split(',').map((s) => s.trim()).toList();
       if (parts.length < 5) continue;
       komutlar.add(IrKomut(
         ad: parts[0],

@@ -1,9 +1,9 @@
+app:
+  baslik: "ShiftMote"
+
 app_adi: "ShiftMote"
 
-anasayfa: "Home"
-kumanda_ekle: "Add Remote"
 kumanda: "Remote"
-ayarlar: "Settings"
 dil: "Language"
 hakkinda: "About"
 
@@ -12,7 +12,26 @@ kaydet: "Save"
 sil: "Delete"
 geri: "Back"
 
+nav:
+  anasayfa: "Home"
+  odalar: "Rooms"
+  favoriler: "Favorites"
+
+genel:
+  ekle: "Add"
+  kaydet: "Save"
+  iptal: "Cancel"
+  sil: "Delete"
+  duzenle: "Edit"
+  yeniden_adlandir: "Rename"
+  yukleniyor: "Loading..."
+  hata: "An error occurred"
+  ara: "Search..."
+  sonuc_yok: "No results"
+  ir_yok_uyari: "This device has no IR emitter. Buttons are shown but transmission is not possible."
+
 cihaz:
+  silme_onay: "Delete {}?"
   tv: "Television"
   klima: "Air Conditioner"
   projektor: "Projector"
@@ -25,12 +44,119 @@ cihaz:
   kamera: "Camera"
   diger: "Other"
 
-genel:
-  yukleniyor: "Loading..."
-  hata: "An error occurred"
-  ara: "Search..."
-  sonuc_yok: "No results"
-  ir_yok_uyari: "This device has no IR emitter. Buttons are shown but transmission is not possible."
+tema:
+  klasik: "Classic"
+  modern: "Modern"
+
+oda:
+  cihaz: "device"
+
+anasayfa:
+  selam_gece: "Good Night 🌙"
+  selam_sabah: "Good Morning ☀️"
+  selam_gun: "Hello 🌤️"
+  selam_aksam: "Good Evening 🌙"
+  cihaz: "devices"
+  odalar: "Rooms"
+  tum_cihazlar: "All Devices"
+  bos_odalar: "No rooms yet"
+  bos_cihazlar: "No devices yet"
+  bos_cihazlar_alt: "Tap + to add a device"
+
+odalar:
+  baslik: "Rooms"
+  oda_alt: "rooms"
+  bos: "No rooms yet"
+  bos_alt: "Add a room to organize your devices"
+
+favoriler:
+  baslik: "Favorites"
+  cihaz: "favorite devices"
+  bos: "No favorites yet"
+  bos_alt: "Tap the star on a device to favorite it"
+
+oda_ekle:
+  baslik: "Add Room"
+  ad_etiket: "Room Name"
+  ad_hint: "e.g. Living Room"
+  ikon_secin: "Pick an Icon"
+
+oda_detay:
+  cihazlar: "Devices"
+  cihaz_yok: "No devices in this room yet"
+  yok: "Room not found"
+  sil_baslik: "Delete room"
+  sil_aciklama: "This room will be deleted. Devices will remain but lose their room assignment."
+
+kumanda_ekle:
+  kategori_baslik: "Device Type"
+  marka_baslik: "Select Brand"
+  model_baslik: "Select Model"
+  dene_baslik: "Try Your Device"
+  ad_baslik: "Name It"
+  marka_ara: "Search brand..."
+  populer: "Popular brands"
+  ad_etiket: "Remote Name"
+  ad_hint: "e.g. Living Room TV"
+  oda_secin: "Select room (optional)"
+  oda_yok: "No room"
+  dene_aciklama: "Tap the power button below. If the device responds, tap Yes; otherwise tap No to try the next model."
+  cihaz_tepki: "Did the device respond?"
+  evet: "Yes"
+  hayir: "No"
+  guc: "Power"
+  model_yok: "No compatible models found for this brand"
+  tum_modeller: "All models have been tried"
+  geri_marka: "Pick a different brand"
+
+kumanda_page:
+  komut_yok: "No commands in this model."
+  protokol_desteklenmiyor: "Protocol not supported"
+  ir_yok: "No IR hardware."
+  yok: "Remote not found."
+  diger: "Other Commands"
+  fan_mode: "Mode"
+  speed: "Speed"
+  oscillation: "Oscillation"
+  timer: "Timer"
+  light: "Light"
+  sleep: "Sleep"
+
+tv:
+  kanal: "Channel"
+  ses: "Volume"
+  sessiz: "Muted"
+
+klima:
+  mod: "Mode"
+  fan_hizi: "Fan Speed"
+  cool: "Cool"
+  heat: "Heat"
+  fan: "Fan"
+  auto: "Auto"
+  dusuk: "Low"
+  orta: "Medium"
+  yuksek: "High"
+
+projektor:
+  kaynak: "Source"
+  zoom: "Zoom"
+
+ayarlar:
+  baslik: "Settings"
+  tema: "Theme"
+  dil: "Language"
+  hakkinda: "About"
+
+ayarlar_page:
+  tema: "Theme"
+  karanlik_mod: "Dark Mode"
+  acik_mod: "Light Mode"
+  dil_secim: "Language"
+
+dil_page:
+  turkce: "Türkçe"
+  ingilizce: "English"
 
 anasayfa_page:
   bos_baslik: "No remotes added yet"
@@ -48,21 +174,6 @@ ekle_page:
   marka: "Brand"
   model: "Model"
   eksik_bilgi: "Missing information."
-
-kumanda_page:
-  komut_yok: "No commands in this model."
-  protokol_desteklenmiyor: "Protocol not supported"
-  ir_yok: "No IR hardware."
-
-ayarlar_page:
-  tema: "Theme"
-  karanlik_mod: "Dark Mode"
-  acik_mod: "Light Mode"
-  dil_secim: "Language"
-
-dil_page:
-  turkce: "Türkçe"
-  ingilizce: "English"
 
 hakkinda_page:
   aciklama: "A universal remote that uses your phone's IR blaster hardware."

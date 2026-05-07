@@ -1,9 +1,9 @@
+app:
+  baslik: "ShiftMote"
+
 app_adi: "ShiftMote"
 
-anasayfa: "Anasayfa"
-kumanda_ekle: "Kumanda Ekle"
 kumanda: "Kumanda"
-ayarlar: "Ayarlar"
 dil: "Dil"
 hakkinda: "Hakkında"
 
@@ -12,7 +12,26 @@ kaydet: "Kaydet"
 sil: "Sil"
 geri: "Geri"
 
+nav:
+  anasayfa: "Ana Sayfa"
+  odalar: "Odalar"
+  favoriler: "Favoriler"
+
+genel:
+  ekle: "Ekle"
+  kaydet: "Kaydet"
+  iptal: "İptal"
+  sil: "Sil"
+  duzenle: "Düzenle"
+  yeniden_adlandir: "Yeniden Adlandır"
+  yukleniyor: "Yükleniyor..."
+  hata: "Bir hata oluştu"
+  ara: "Ara..."
+  sonuc_yok: "Sonuç yok"
+  ir_yok_uyari: "Bu cihazda IR emitter yok. Butonlar gösterilir ama yayım yapılamaz."
+
 cihaz:
+  silme_onay: "{} silinsin mi?"
   tv: "Televizyon"
   klima: "Klima"
   projektor: "Projeksiyon"
@@ -25,12 +44,119 @@ cihaz:
   kamera: "Kamera"
   diger: "Diğer"
 
-genel:
-  yukleniyor: "Yükleniyor..."
-  hata: "Bir hata oluştu"
-  ara: "Ara..."
-  sonuc_yok: "Sonuç yok"
-  ir_yok_uyari: "Bu cihazda IR emitter yok. Butonlar gösterilir ama yayım yapılamaz."
+tema:
+  klasik: "Klasik"
+  modern: "Modern"
+
+oda:
+  cihaz: "cihaz"
+
+anasayfa:
+  selam_gece: "İyi Geceler 🌙"
+  selam_sabah: "Günaydın ☀️"
+  selam_gun: "İyi Günler 🌤️"
+  selam_aksam: "İyi Akşamlar 🌙"
+  cihaz: "cihaz"
+  odalar: "Odalar"
+  tum_cihazlar: "Tüm Cihazlar"
+  bos_odalar: "Henüz oda eklenmedi"
+  bos_cihazlar: "Henüz cihaz eklenmedi"
+  bos_cihazlar_alt: "Bir cihaz eklemek için + butonuna basın"
+
+odalar:
+  baslik: "Odalar"
+  oda_alt: "oda"
+  bos: "Henüz oda eklenmedi"
+  bos_alt: "Cihazlarınızı düzenlemek için bir oda ekleyin"
+
+favoriler:
+  baslik: "Favoriler"
+  cihaz: "favori cihaz"
+  bos: "Henüz favori yok"
+  bos_alt: "Cihazlarınızı yıldız ile favorilere ekleyebilirsiniz"
+
+oda_ekle:
+  baslik: "Oda Ekle"
+  ad_etiket: "Oda Adı"
+  ad_hint: "Örn. Salon"
+  ikon_secin: "İkon Seçin"
+
+oda_detay:
+  cihazlar: "Cihazlar"
+  cihaz_yok: "Bu odada henüz cihaz yok"
+  yok: "Oda bulunamadı"
+  sil_baslik: "Odayı sil"
+  sil_aciklama: "Bu oda silinecek. Cihazlar kaybolmaz, sadece odaları kaldırılır."
+
+kumanda_ekle:
+  kategori_baslik: "Cihaz Türü"
+  marka_baslik: "Marka Seç"
+  model_baslik: "Model Seç"
+  dene_baslik: "Cihazını Dene"
+  ad_baslik: "İsim Ver"
+  marka_ara: "Marka ara..."
+  populer: "Popüler markalar"
+  ad_etiket: "Kumanda Adı"
+  ad_hint: "Örn. Salon TV"
+  oda_secin: "Oda seç (opsiyonel)"
+  oda_yok: "Oda yok"
+  dene_aciklama: "Aşağıdaki güç butonuna bas. Cihaz tepki verirse Evet'e, vermezse Hayır'a basarak sıradaki modele geç."
+  cihaz_tepki: "Cihaz tepki verdi mi?"
+  evet: "Evet"
+  hayir: "Hayır"
+  guc: "Güç"
+  model_yok: "Bu marka için uyumlu model bulunamadı"
+  tum_modeller: "Tüm modeller denendi"
+  geri_marka: "Farklı bir marka seç"
+
+kumanda_page:
+  komut_yok: "Bu modelde komut yok."
+  protokol_desteklenmiyor: "Protokol desteklenmiyor"
+  ir_yok: "IR donanımı yok."
+  yok: "Kumanda bulunamadı."
+  diger: "Diğer Komutlar"
+  fan_mode: "Mod"
+  speed: "Hız"
+  oscillation: "Salınım"
+  timer: "Zaman"
+  light: "Işık"
+  sleep: "Uyku"
+
+tv:
+  kanal: "Kanal"
+  ses: "Ses"
+  sessiz: "Kapalı"
+
+klima:
+  mod: "Mod"
+  fan_hizi: "Fan Hızı"
+  cool: "Soğuk"
+  heat: "Sıcak"
+  fan: "Fan"
+  auto: "Oto"
+  dusuk: "Düşük"
+  orta: "Orta"
+  yuksek: "Yüksek"
+
+projektor:
+  kaynak: "Kaynak"
+  zoom: "Zoom"
+
+ayarlar:
+  baslik: "Ayarlar"
+  tema: "Tema"
+  dil: "Dil"
+  hakkinda: "Hakkında"
+
+ayarlar_page:
+  tema: "Tema"
+  karanlik_mod: "Karanlık Mod"
+  acik_mod: "Açık Mod"
+  dil_secim: "Dil Seçimi"
+
+dil_page:
+  turkce: "Türkçe"
+  ingilizce: "English"
 
 anasayfa_page:
   bos_baslik: "Henüz kumanda eklenmedi"
@@ -48,21 +174,6 @@ ekle_page:
   marka: "Marka"
   model: "Model"
   eksik_bilgi: "Eksik bilgi var."
-
-kumanda_page:
-  komut_yok: "Bu modelde komut yok."
-  protokol_desteklenmiyor: "Protokol desteklenmiyor"
-  ir_yok: "IR donanımı yok."
-
-ayarlar_page:
-  tema: "Tema"
-  karanlik_mod: "Karanlık Mod"
-  acik_mod: "Açık Mod"
-  dil_secim: "Dil Seçimi"
-
-dil_page:
-  turkce: "Türkçe"
-  ingilizce: "English"
 
 hakkinda_page:
   aciklama: "Telefonunun IR (kızılötesi) blaster donanımını kullanan evrensel bir kumanda."

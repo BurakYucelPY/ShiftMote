@@ -3,6 +3,11 @@
         android:name="android.hardware.consumerir"
         android:required="false"/>
 
+    <!-- Modern Android'de gerekli degil ama Xiaomi HyperOS gibi bazi
+         vendor ROM'lar bu eski izni hala kontrol ediyor. Beyan etmemek
+         SecurityException ile transmit'i engelliyor. -->
+    <uses-permission android:name="android.permission.TRANSMIT_IR"/>
+
     <application
         android:label="ShiftMote"
         android:name="${applicationName}"
